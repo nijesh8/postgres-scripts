@@ -1,0 +1,27 @@
+
+echo "Directory Permissions.."
+echo "===================================" ; 
+chmod o+rx $PGDATA
+ls -ld $PGDATA
+
+echo "Killing Postgres process"
+echo "==================================================" ; echo 
+echo "Postgres process kill started at `date`" ;  
+
+for i in `ps -ef | grep "background writer" | grep -v grep|awk '{print $3}'`
+do 
+ps -ef |grep $i | grep -v grep 
+kill -9  $i
+done
+
+echo; echo "Postgres process kill ended   at `date`"
+sleep 3
+
+echo 
+echo "Checking for Postgres processes.."
+echo "===================================" ; echo 
+ps -ef | grep -v grep 
+
+echo
+patronictl list
+

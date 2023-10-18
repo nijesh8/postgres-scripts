@@ -1,0 +1,7 @@
+cd /Users/ninarayanan/Documents/A01_WorkDocs1/PostgreSQL/Postgres14/COMMON_SCRIPTS
+tar cvf pgscripts.tar .bashrc pgkill pgstop pgstart stby.sh .psqlrc  pg pglist pg_stats.sql
+
+
+echo "CP using the below:"
+echo "tk130d cp pgscripts.tar rdsnusqlpoc2-fss-lvs-1-ezjxo:/home/postgres/pgscripts.tar"
+

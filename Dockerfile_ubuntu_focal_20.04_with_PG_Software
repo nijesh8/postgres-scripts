@@ -1,0 +1,77 @@
+##
+FROM amd64/ubuntu:20.04
+
+ENV UBUNTU_CODE_NAME focal
+ENV PGVERSION 14
+ENV PG_VERSION 14
+ENV PGHOME /home/stolon
+ENV PGDATA=/var/lib/postgresql/data
+# ENV PGDATA /data/postgresql
+# ENV POSTGRES_USER postgres
+ENV POSTGRES_USER stolon
+ENV POSTGRES_GROUP stolon
+ENV POSTGRES_PASSWORD test123
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/lib/postgresql/${PGVERSION}/bin
+# VOLUME /data
+
+RUN export DEBIAN_FRONTEND=noninteractive \
+  && apt-get update -y \
+  && apt-get install -y vim \
+  && apt-get install -y nano \
+  && apt-get install -y curl \
+  && apt-get install -y htop \
+  && apt-get install -y procps \
+  && apt-get install -y findutils \
+  && apt-get install -y iputils-ping \
+  && apt-get install -y sysstat \
+  && apt-get install -y gnupg2 \
+  && apt-get install -y telnet \
+  && apt-get install -y ca-certificates \
+  && apt-get install -y screen \
+  && apt-get install -y jq 
+
+## RUN dpkg --add-architecture amd64
+
+## RUN export DEBIAN_FRONTEND=noninteractive \
+##   && apt-get install -y python3.8-minimal \
+##   && apt-get install -y python3-minimal \
+##   && apt-get install -y python3.8 \
+##   && apt-get install -y python3
+
+
+COPY ./ub_packages/postgres_ubuntu_2004_focal_packages_UPDATED_10122022.tar.gz /
+RUN tar xvfz postgres_ubuntu_2004_focal_packages_UPDATED_10122022.tar.gz
+RUN export DEBIAN_FRONTEND=noninteractive   && dpkg -i 1_postgresql-client-14/*.deb
+RUN export DEBIAN_FRONTEND=noninteractive   && dpkg -i 2_postgresql-14/*.deb
+RUN export DEBIAN_FRONTEND=noninteractive   && dpkg -i 3_libpq-dev/*.deb
+RUN export DEBIAN_FRONTEND=noninteractive   && dpkg -i 4_python3/python3.8-minimal_3.8.10-0ubuntu1~20.04.5_amd64.deb
+RUN export DEBIAN_FRONTEND=noninteractive   && dpkg -i 4_python3/python3-minimal_3.8.2-0ubuntu2_amd64.deb
+RUN export DEBIAN_FRONTEND=noninteractive   && dpkg -i 4_python3/libpython3-stdlib_3.8.2-0ubuntu2_amd64.deb
+RUN export DEBIAN_FRONTEND=noninteractive   && dpkg -i 4_python3/python3.8_3.8.10-0ubuntu1~20.04.5_amd64.deb
+RUN export DEBIAN_FRONTEND=noninteractive   && dpkg -i 4_python3/python3_3.8.2-0ubuntu2_amd64.deb
+RUN export DEBIAN_FRONTEND=noninteractive   && dpkg -i 5_postgresql-server-dev-14/*.deb
+RUN export DEBIAN_FRONTEND=noninteractive   && dpkg -i 6_postgresql-contrib/*.deb
+RUN export DEBIAN_FRONTEND=noninteractive   && dpkg -i 7_pgbackrest/*.deb
+  
+RUN export DEBIAN_FRONTEND=noninteractive \
+  && apt-get install -y python3-psycopg2 \
+  && apt-get install -y kmod \
+  && apt-get install -y watchdog
+
+RUN echo "softdog" >> /etc/modules
+
+# RUN depmod
+# RUN modprobe softdog
+# RUN chown postgres /dev/watchdog
+
+VOLUME /data
+RUN mkdir -p /data/postgres/14 && chown -R postgres:postgres /data/postgres
+RUN usermod -m -d /home/postgres postgres
+RUN echo "export PATH=/usr/lib/postgresql/14/bin:$PATH" >> /home/postgres/.bash_profile
+RUN echo "alias ltr='ls -ltr'" >> /home/postgres/.bash_profile
+
+WORKDIR /home/postgres
+RUN mkdir -p /home/postgres/scripts
+COPY scripts/* /home/postgres/scripts/
+RUN chown -R postgres:postgres /home/postgres
+## USER postgres

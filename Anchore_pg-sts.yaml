@@ -1,0 +1,370 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    application.tess.io/id: urn:ebay-marketplace-consumerid:b06eeb86-b2bc-4ec2-adb4-2658bbd7aaf9
+    application.tess.io/name: anchore
+    applicationinstance.tess.io/name: anchore-db
+    environment.tess.io/name: tcop
+    identity.alpha.tess.io/set-fsgroup: "true"
+    io.sherlock.logs/namespace: anchore
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"StatefulSet","metadata":{"annotations":{"application.tess.io/id":"urn:ebay-marketplace-consumerid:b06eeb86-b2bc-4ec2-adb4-2658bbd7aaf9","application.tess.io/name":"anchore","applicationinstance.tess.io/name":"anchore-db","environment.tess.io/name":"tcop","identity.alpha.tess.io/set-fsgroup":"true","io.sherlock.logs/namespace":"anchore"},"generation":47,"labels":{"app":"pgha-prod","application.tess.io/name":"anchore","applicationinstance.tess.io/name":"anchore-db","environment.tess.io/name":"tcop","lifecycle-state.tess.io/name":"production"},"name":"pg-prod","namespace":"anchore-tcop"},"spec":{"podManagementPolicy":"OrderedReady","replicas":0,"revisionHistoryLimit":10,"selector":{"matchLabels":{"app":"pgha-prod"}},"serviceName":"pg-prod-svc","template":{"metadata":{"annotations":{"identity.alpha.tess.io/set-fsgroup":"true","io.sherlock.metrics/hosts":"${data.host}:9187,${data.host}:9100","io.sherlock.metrics/module":"prometheus","io.sherlock.metrics/namespace":"anchore","io.sherlock.metrics/period":"60s","io.sherlock.metrics/timeout":"30s","kubectl.kubernetes.io/restartedAt":"2022-12-04T10:16:37+08:00"},"creationTimestamp":null,"labels":{"app":"pgha-prod","applicationinstance.tess.io/name":"anchore-db"}},"spec":{"containers":[{"env":[{"name":"BITNAMI_DEBUG","value":"true"},{"name":"POSTGRESQL_VOLUME_DIR","value":"/bitnami/postgresql"},{"name":"PGDATA","value":"/bitnami/postgresql/data"},{"name":"POSTGRES_USER","value":"anchore"},{"name":"POSTGRES_PASSWORD","valueFrom":{"secretKeyRef":{"key":"postgresql-password","name":"pg-ha-secret"}}},{"name":"POSTGRES_DB","value":"anchore_db"},{"name":"POSTGRESQL_LOG_HOSTNAME","value":"true"},{"name":"POSTGRESQL_LOG_CONNECTIONS","value":"false"},{"name":"POSTGRESQL_LOG_DISCONNECTIONS","value":"false"},{"name":"POSTGRESQL_PGAUDIT_LOG_CATALOG","value":"off"},{"name":"REPMGR_PGHBA_TRUST_ALL","value":"yes"},{"name":"POSTGRESQL_CLIENT_MIN_MESSAGES","value":"error"},{"name":"POSTGRESQL_SHARED_PRELOAD_LIBRARIES","value":"pgaudit, repmgr"},{"name":"POSTGRESQL_ENABLE_TLS","value":"no"},{"name":"POSTGRESQL_PORT_NUMBER","value":"5432"},{"name":"REPMGR_PORT_NUMBER","value":"5432"},{"name":"REPMGR_PRIMARY_PORT","value":"5432"},{"name":"MY_POD_NAME","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.name"}}},{"name":"REPMGR_UPGRADE_EXTENSION","value":"no"},{"name":"REPMGR_MOUNTED_CONF_DIR","value":"/bitnami/repmgr/conf"},{"name":"REPMGR_NAMESPACE","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"metadata.namespace"}}},{"name":"REPMGR_PARTNER_NODES","value":"pg-prod-0.pg-prod-svc.anchore-tcop.svc.94.tess.io,pg-prod-1.pg-prod-svc.anchore-tcop.svc.94.tess.io,pg-prod-2.pg-prod-svc.anchore-tcop.svc.94.tess.io,pg-prod-3.pg-prod-svc.anchore-tcop.svc.94.tess.io,"},{"name":"REPMGR_PRIMARY_HOST","value":"pg-prod-0.pg-prod-svc.anchore-tcop.svc.94.tess.io"},{"name":"REPMGR_NODE_NAME","value":"$(MY_POD_NAME)"},{"name":"REPMGR_NODE_NETWORK_NAME","value":"$(MY_POD_NAME).pg-prod-svc.anchore-tcop.svc.94.tess.io"},{"name":"REPMGR_LOG_LEVEL","value":"INFO"},{"name":"REPMGR_CONNECT_TIMEOUT","value":"5"},{"name":"REPMGR_RECONNECT_ATTEMPTS","value":"2"},{"name":"REPMGR_RECONNECT_INTERVAL","value":"3"},{"name":"REPMGR_USERNAME","value":"anchore_repl"},{"name":"REPMGR_PASSWORD","valueFrom":{"secretKeyRef":{"key":"repmgr-password","name":"pg-ha-secret"}}},{"name":"REPMGR_DATABASE","value":"anchore_repl_db"},{"name":"REPMGR_FENCE_OLD_PRIMARY","value":"no"},{"name":"REPMGR_CHILD_NODES_CHECK_INTERVAL","value":"5"},{"name":"REPMGR_CHILD_NODES_CONNECTED_MIN_COUNT","value":"3"},{"name":"REPMGR_CHILD_NODES_DISCONNECT_TIMEOUT","value":"30"}],"image":"hub.tess.io/infosecops/postgresql:14.5.1","imagePullPolicy":"IfNotPresent","lifecycle":{"preStop":{"exec":{"command":["/pre-stop.sh"]}}},"livenessProbe":{"exec":{"command":["bash","-ec","PGPASSWORD=$POSTGRES_PASSWORD psql -w -U \"anchore\" -d \"anchore_db\" -h 127.0.0.1 -p 5432 -c \"SELECT 1\""]},"failureThreshold":6,"initialDelaySeconds":30,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5},"name":"pgdb","ports":[{"containerPort":5432,"name":"postgresql","protocol":"TCP"}],"readinessProbe":{"exec":{"command":["bash","-ec","PGPASSWORD=$POSTGRES_PASSWORD psql -w -U \"anchore\" -d \"anchore_db\" -h 127.0.0.1 -p 5432 -c \"SELECT 1\""]},"failureThreshold":6,"initialDelaySeconds":5,"periodSeconds":10,"successThreshold":1,"timeoutSeconds":5},"resources":{"limits":{"cpu":"20","memory":"80Gi"},"requests":{"cpu":"5","memory":"15Gi"}},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","volumeMounts":[{"mountPath":"/bitnami/postgresql","name":"pg-data"},{"mountPath":"/opt/bitnami/postgresql/conf","name":"pg-conf"},{"mountPath":"/opt/bitnami/repmgr/conf","name":"repmgr-conf"},{"mountPath":"/opt/bitnami/postgresql/tmp","name":"pg-tmp"},{"mountPath":"/opt/bitnami/postgresql/conf/conf.d","name":"pg-confd"},{"mountPath":"/opt/bitnami/postgresql/conf/conf.d/00newsetting.conf","name":"pg-ha-conf","subPath":"00newsetting.conf"},{"mountPath":"/opt/bitnami/repmgr/tmp/","name":"rep-tmp"},{"mountPath":"/tmp","name":"tmp"},{"mountPath":"/dev/shm","name":"dshm"},{"mountPath":"/pre-stop.sh","name":"hooks-scripts","subPath":"pre-stop.sh"}]},{"args":["--no-collector.arp","--no-collector.bcache","--no-collector.bonding","--no-collector.buddyinfo","--no-collector.conntrack","--no-collector.cpufreq","--no-collector.diskstats","--no-collector.drbd","--no-collector.edac","--no-collector.entropy","--no-collector.filefd","--no-collector.hwmon","--no-collector.infiniband","--no-collector.interrupts","--no-collector.ipvs","--no-collector.ksmd","--no-collector.logind","--no-collector.mdadm","--no-collector.netclass","--no-collector.netdev","--no-collector.netstat","--no-collector.nfs","--no-collector.nfsd","--no-collector.ntp","--no-collector.perf","--no-collector.processes","--no-collector.qdisc","--no-collector.runit","--no-collector.sockstat","--no-collector.stat","--no-collector.supervisord","--no-collector.systemd","--no-collector.tcpstat","--no-collector.textfile","--no-collector.time","--no-collector.timex","--no-collector.uname","--no-collector.wifi","--no-collector.xfs","--no-collector.zfs"],"image":"hub.tess.io/infosecops/node-exporter:0.1","imagePullPolicy":"IfNotPresent","name":"pv-monitor","ports":[{"containerPort":9100,"name":"node-exporter","protocol":"TCP"}],"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"200m","memory":"100Mi"}},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","volumeMounts":[{"mountPath":"/opt/monitor","name":"pg-data"}]},{"env":[{"name":"MY_POD_IP","valueFrom":{"fieldRef":{"apiVersion":"v1","fieldPath":"status.podIP"}}},{"name":"PG_EXPORTER_WEB_LISTEN_ADDRESS","value":":9187"},{"name":"DATA_SOURCE_URI","value":"127.0.0.1:5432/anchore_db?sslmode=disable"},{"name":"DATA_SOURCE_PASS","valueFrom":{"secretKeyRef":{"key":"postgresql-password","name":"pg-ha-secret"}}},{"name":"DATA_SOURCE_USER","value":"anchore"}],"image":"hub.tess.io/anchore-ebay/postgres-exporter:0.21.2","imagePullPolicy":"IfNotPresent","livenessProbe":{"failureThreshold":6,"initialDelaySeconds":30,"periodSeconds":10,"successThreshold":1,"tcpSocket":{"port":9187},"timeoutSeconds":5},"name":"metrics","ports":[{"containerPort":9187,"name":"pg-metrics","protocol":"TCP"}],"readinessProbe":{"failureThreshold":6,"initialDelaySeconds":5,"periodSeconds":10,"successThreshold":1,"tcpSocket":{"port":9187},"timeoutSeconds":5},"resources":{"limits":{"cpu":"300m","memory":"300Mi"},"requests":{"cpu":"200m","memory":"200Mi"}},"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File"}],"dnsPolicy":"ClusterFirst","nodeSelector":{"dedicated":"tcop-highmem"},"restartPolicy":"Always","schedulerName":"default-scheduler","securityContext":{},"serviceAccount":"pg-sa","serviceAccountName":"pg-sa","terminationGracePeriodSeconds":30,"tolerations":[{"effect":"NoSchedule","key":"dedicated","value":"tcop-highmem"}],"volumes":[{"emptyDir":{},"name":"tmp"},{"emptyDir":{},"name":"rep-tmp"},{"emptyDir":{},"name":"pg-tmp"},{"emptyDir":{"medium":"Memory","sizeLimit":"12Gi"},"name":"dshm"},{"emptyDir":{},"name":"pg-confd"},{"emptyDir":{},"name":"pg-conf"},{"emptyDir":{},"name":"repmgr-conf"},{"configMap":{"defaultMode":420,"name":"pg-ha-conf"},"name":"pg-ha-conf"},{"configMap":{"defaultMode":493,"name":"pg-hooks-scripts"},"name":"hooks-scripts"}]}},"updateStrategy":{"rollingUpdate":{"partition":0},"type":"RollingUpdate"},"volumeClaimTemplates":[{"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{"volume.beta.kubernetes.io/storage-class":"local-dynamic"},"creationTimestamp":null,"name":"pg-data"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"2400Gi"}},"storageClassName":"cinder-standard","volumeMode":"Filesystem"},"status":{"phase":"Pending"}}]}}
+    tess.io/change-request-ticket-ui-link: https://ebayinc.service-now.com/nav_to.do?uri=%2Fchange_request.do%3Fsysparm_query%3Dx_ebay_message_bus_msb_transaction_id%253Db1bb1ae5-e26e-4fb5-9861-475646db6ae0%26sysparm_view%3DStandard
+  creationTimestamp: "2023-01-15T07:43:35Z"
+  generation: 2
+  labels:
+    app: pgha-prod
+    application.tess.io/name: anchore
+    applicationinstance.tess.io/name: anchore-db
+    environment.tess.io/name: tcop
+    lifecycle-state.tess.io/name: production
+  name: pg-prod
+  namespace: anchore-tcop
+  resourceVersion: "34280278807"
+  selfLink: /apis/apps/v1/namespaces/anchore-tcop/statefulsets/pg-prod
+  uid: 6e826684-9455-406e-b692-b53da81f538d
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 4
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: pgha-prod
+  serviceName: pg-prod-svc
+  template:
+    metadata:
+      annotations:
+        identity.alpha.tess.io/set-fsgroup: "true"
+        io.sherlock.metrics/hosts: ${data.host}:9187,${data.host}:9100
+        io.sherlock.metrics/module: prometheus
+        io.sherlock.metrics/namespace: anchore
+        io.sherlock.metrics/period: 60s
+        io.sherlock.metrics/timeout: 30s
+        kubectl.kubernetes.io/restartedAt: "2022-12-04T10:16:37+08:00"
+      creationTimestamp: null
+      labels:
+        app: pgha-prod
+        applicationinstance.tess.io/name: anchore-db
+    spec:
+      containers:
+      - env:
+        - name: BITNAMI_DEBUG
+          value: "true"
+        - name: POSTGRESQL_VOLUME_DIR
+          value: /bitnami/postgresql
+        - name: PGDATA
+          value: /bitnami/postgresql/data
+        - name: POSTGRES_USER
+          value: anchore
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: postgresql-password
+              name: pg-ha-secret
+        - name: POSTGRES_DB
+          value: anchore_db
+        - name: POSTGRESQL_LOG_HOSTNAME
+          value: "true"
+        - name: POSTGRESQL_LOG_CONNECTIONS
+          value: "false"
+        - name: POSTGRESQL_LOG_DISCONNECTIONS
+          value: "false"
+        - name: POSTGRESQL_PGAUDIT_LOG_CATALOG
+          value: "off"
+        - name: REPMGR_PGHBA_TRUST_ALL
+          value: "yes"
+        - name: POSTGRESQL_CLIENT_MIN_MESSAGES
+          value: error
+        - name: POSTGRESQL_SHARED_PRELOAD_LIBRARIES
+          value: pgaudit, repmgr
+        - name: POSTGRESQL_ENABLE_TLS
+          value: "no"
+        - name: POSTGRESQL_PORT_NUMBER
+          value: "5432"
+        - name: REPMGR_PORT_NUMBER
+          value: "5432"
+        - name: REPMGR_PRIMARY_PORT
+          value: "5432"
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: REPMGR_UPGRADE_EXTENSION
+          value: "no"
+        - name: REPMGR_MOUNTED_CONF_DIR
+          value: /bitnami/repmgr/conf
+        - name: REPMGR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: REPMGR_PARTNER_NODES
+          value: pg-prod-0.pg-prod-svc.anchore-tcop.svc.94.tess.io,pg-prod-1.pg-prod-svc.anchore-tcop.svc.94.tess.io,pg-prod-2.pg-prod-svc.anchore-tcop.svc.94.tess.io,pg-prod-3.pg-prod-svc.anchore-tcop.svc.94.tess.io,
+        - name: REPMGR_PRIMARY_HOST
+          value: pg-prod-0.pg-prod-svc.anchore-tcop.svc.94.tess.io
+        - name: REPMGR_NODE_NAME
+          value: $(MY_POD_NAME)
+        - name: REPMGR_NODE_NETWORK_NAME
+          value: $(MY_POD_NAME).pg-prod-svc.anchore-tcop.svc.94.tess.io
+        - name: REPMGR_LOG_LEVEL
+          value: INFO
+        - name: REPMGR_CONNECT_TIMEOUT
+          value: "5"
+        - name: REPMGR_RECONNECT_ATTEMPTS
+          value: "2"
+        - name: REPMGR_RECONNECT_INTERVAL
+          value: "3"
+        - name: REPMGR_USERNAME
+          value: anchore_repl
+        - name: REPMGR_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: repmgr-password
+              name: pg-ha-secret
+        - name: REPMGR_DATABASE
+          value: anchore_repl_db
+        - name: REPMGR_FENCE_OLD_PRIMARY
+          value: "no"
+        - name: REPMGR_CHILD_NODES_CHECK_INTERVAL
+          value: "5"
+        - name: REPMGR_CHILD_NODES_CONNECTED_MIN_COUNT
+          value: "3"
+        - name: REPMGR_CHILD_NODES_DISCONNECT_TIMEOUT
+          value: "30"
+        image: hub.tess.io/infosecops/postgresql:14.5.1
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /pre-stop.sh
+        livenessProbe:
+          exec:
+            command:
+            - bash
+            - -ec
+            - PGPASSWORD=$POSTGRES_PASSWORD psql -w -U "anchore" -d "anchore_db" -h 127.0.0.1 -p 5432 -c "SELECT 1"
+          failureThreshold: 6
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: pgdb
+        ports:
+        - containerPort: 5432
+          name: postgresql
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - bash
+            - -ec
+            - PGPASSWORD=$POSTGRES_PASSWORD psql -w -U "anchore" -d "anchore_db" -h 127.0.0.1 -p 5432 -c "SELECT 1"
+          failureThreshold: 6
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "20"
+            memory: 80Gi
+          requests:
+            cpu: "5"
+            memory: 15Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /bitnami/postgresql
+          name: pg-data
+        - mountPath: /opt/bitnami/postgresql/conf
+          name: pg-conf
+        - mountPath: /opt/bitnami/repmgr/conf
+          name: repmgr-conf
+        - mountPath: /opt/bitnami/postgresql/tmp
+          name: pg-tmp
+        - mountPath: /opt/bitnami/postgresql/conf/conf.d
+          name: pg-confd
+        - mountPath: /opt/bitnami/postgresql/conf/conf.d/00newsetting.conf
+          name: pg-ha-conf
+          subPath: 00newsetting.conf
+        - mountPath: /opt/bitnami/repmgr/tmp/
+          name: rep-tmp
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /dev/shm
+          name: dshm
+        - mountPath: /pre-stop.sh
+          name: hooks-scripts
+          subPath: pre-stop.sh
+      - args:
+        - --no-collector.arp
+        - --no-collector.bcache
+        - --no-collector.bonding
+        - --no-collector.buddyinfo
+        - --no-collector.conntrack
+        - --no-collector.cpufreq
+        - --no-collector.diskstats
+        - --no-collector.drbd
+        - --no-collector.edac
+        - --no-collector.entropy
+        - --no-collector.filefd
+        - --no-collector.hwmon
+        - --no-collector.infiniband
+        - --no-collector.interrupts
+        - --no-collector.ipvs
+        - --no-collector.ksmd
+        - --no-collector.logind
+        - --no-collector.mdadm
+        - --no-collector.netclass
+        - --no-collector.netdev
+        - --no-collector.netstat
+        - --no-collector.nfs
+        - --no-collector.nfsd
+        - --no-collector.ntp
+        - --no-collector.perf
+        - --no-collector.processes
+        - --no-collector.qdisc
+        - --no-collector.runit
+        - --no-collector.sockstat
+        - --no-collector.stat
+        - --no-collector.supervisord
+        - --no-collector.systemd
+        - --no-collector.tcpstat
+        - --no-collector.textfile
+        - --no-collector.time
+        - --no-collector.timex
+        - --no-collector.uname
+        - --no-collector.wifi
+        - --no-collector.xfs
+        - --no-collector.zfs
+        image: hub.tess.io/infosecops/node-exporter:0.1
+        imagePullPolicy: IfNotPresent
+        name: pv-monitor
+        ports:
+        - containerPort: 9100
+          name: node-exporter
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 300m
+            memory: 300Mi
+          requests:
+            cpu: 200m
+            memory: 100Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /opt/monitor
+          name: pg-data
+      - env:
+        - name: MY_POD_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        - name: PG_EXPORTER_WEB_LISTEN_ADDRESS
+          value: :9187
+        - name: DATA_SOURCE_URI
+          value: 127.0.0.1:5432/anchore_db?sslmode=disable
+        - name: DATA_SOURCE_PASS
+          valueFrom:
+            secretKeyRef:
+              key: postgresql-password
+              name: pg-ha-secret
+        - name: DATA_SOURCE_USER
+          value: anchore
+        image: hub.tess.io/anchore-ebay/postgres-exporter:0.21.2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 6
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 9187
+          timeoutSeconds: 5
+        name: metrics
+        ports:
+        - containerPort: 9187
+          name: pg-metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 6
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 9187
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 300m
+            memory: 300Mi
+          requests:
+            cpu: 200m
+            memory: 200Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        dedicated: tcop-highmem
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: pg-sa
+      serviceAccountName: pg-sa
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: dedicated
+        value: tcop-highmem
+      volumes:
+      - emptyDir: {}
+        name: tmp
+      - emptyDir: {}
+        name: rep-tmp
+      - emptyDir: {}
+        name: pg-tmp
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 12Gi
+        name: dshm
+      - emptyDir: {}
+        name: pg-confd
+      - emptyDir: {}
+        name: pg-conf
+      - emptyDir: {}
+        name: repmgr-conf
+      - configMap:
+          defaultMode: 420
+          name: pg-ha-conf
+        name: pg-ha-conf
+      - configMap:
+          defaultMode: 493
+          name: pg-hooks-scripts
+        name: hooks-scripts
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+  volumeClaimTemplates:
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      annotations:
+        volume.beta.kubernetes.io/storage-class: local-dynamic
+      creationTimestamp: null
+      name: pg-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2400Gi
+      storageClassName: cinder-standard
+      volumeMode: Filesystem
+    status:
+      phase: Pending

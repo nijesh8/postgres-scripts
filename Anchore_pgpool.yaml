@@ -1,0 +1,184 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    application.tess.io/id: urn:ebay-marketplace-consumerid:b06eeb86-b2bc-4ec2-adb4-2658bbd7aaf9
+    application.tess.io/name: anchore
+    deployment.kubernetes.io/revision: "84"
+    environment.tess.io/name: tcop
+  generation: 149
+  labels:
+    app: pgpool2-prd
+    application.tess.io/name: anchore
+    applicationinstance.tess.io/name: anchore-db
+    environment.tess.io/name: tcop
+    lifecycle-state.tess.io/name: production
+  name: pgpool2
+  namespace: anchore-tcop
+  resourceVersion: "34338602581"
+  selfLink: /apis/apps/v1/namespaces/anchore-tcop/deployments/pgpool2
+  uid: 5c3be115-00b5-44af-b9f6-8eb04d2aa490
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 8
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: pgpool2-prd
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "2023-01-15T15:12:07+08:00"
+      creationTimestamp: null
+      labels:
+        app: pgpool2-prd
+        applicationinstance.tess.io/name: anchore-db
+      name: pgpool2-prd
+    spec:
+      containers:
+      - env:
+        - name: BITNAMI_DEBUG
+          value: "true"
+        - name: PGPOOL_BACKEND_NODES
+          value: 0:pg-prod-0.pg-prod-svc.anchore-tcop.svc.94.tess.io:5432,1:pg-prod-1.pg-prod-svc.anchore-tcop.svc.94.tess.io:5432,2:pg-prod-2.pg-prod-svc.anchore-tcop.svc.94.tess.io:5432,3:pg-prod-3.pg-prod-svc.anchore-tcop.svc.94.tess.io:5432,
+        - name: PGPOOL_SR_CHECK_USER
+          value: anchore_repl
+        - name: PGPOOL_SR_CHECK_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: repmgr-password
+              name: pg-ha-secret
+        - name: PGPOOL_SR_CHECK_DATABASE
+          value: anchore_repl_db
+        - name: PGPOOL_ENABLE_LDAP
+          value: "no"
+        - name: PGPOOL_ENABLE_POOL_PASSWD
+          value: "yes"
+        - name: PGPOOL_POSTGRES_USERNAME
+          value: anchore
+        - name: PGPOOL_POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: postgresql-password
+              name: pg-ha-secret
+        - name: PGPOOL_ADMIN_USERNAME
+          value: anchore
+        - name: PGPOOL_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: admin-password
+              name: pgpool-pwd
+        - name: PGPOOL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: admin-password
+              name: pgpool-pwd
+        - name: PGPOOL_AUTHENTICATION_METHOD
+          value: scram-sha-256
+        - name: PGPOOL_ENABLE_LOAD_BALANCING
+          value: "yes"
+        - name: PGPOOL_DISABLE_LOAD_BALANCE_ON_WRITE
+          value: transaction
+        - name: PGPOOL_ENABLE_LOG_CONNECTIONS
+          value: "no"
+        - name: PGPOOL_ENABLE_LOG_HOSTNAME
+          value: "yes"
+        - name: PGPOOL_ENABLE_LOG_PER_NODE_STATEMENT
+          value: "no"
+        - name: PGPOOL_RESERVED_CONNECTIONS
+          value: "1"
+        - name: PGPOOL_USER_CONF_FILE
+          value: /opt/bitnami/pgpool/conf/mypool.conf
+        - name: PGPOOL_USER_HBA_FILE
+          value: /opt/bitnami/pgpool/conf/myhba.conf
+        - name: PGPOOL_ENABLE_TLS
+          value: "no"
+        image: hub.tess.io/infosecops/pgpool2:4.3.3.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - /opt/bitnami/scripts/pgpool/healthcheck.sh
+          failureThreshold: 5
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: pgpool2
+        ports:
+        - containerPort: 5432
+          name: postgresql
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - bash
+            - -ec
+            - PGPASSWORD=${PGPOOL_POSTGRES_PASSWORD} psql -U "anchore" -d "anchore_db" -h /opt/bitnami/pgpool/tmp -tA -c "SELECT 1" >/dev/null
+          failureThreshold: 5
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: "2"
+            memory: 15Gi
+          requests:
+            cpu: 600m
+            memory: 4Gi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /opt/bitnami/pgpool/conf
+          name: pg-conf
+        - mountPath: /opt/bitnami/pgpool/etc
+          name: pg-etc
+        - mountPath: /opt/bitnami/pgpool/tmp
+          name: pg-tmp
+        - mountPath: /opt/bitnami/pgpool/logs
+          name: pg-log
+        - mountPath: /opt/bitnami/pgpool/conf/myhba.conf
+          name: config-volume
+          subPath: myhba.conf
+        - mountPath: /opt/bitnami/pgpool/conf/mypool.conf
+          name: config-volume1
+          subPath: mypool.conf
+      dnsPolicy: ClusterFirst
+      nodeSelector:
+        dedicated: tcop-generic
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: dedicated
+        value: tcop-generic
+      volumes:
+      - emptyDir: {}
+        name: pg-log
+      - emptyDir: {}
+        name: pg-tmp
+      - emptyDir: {}
+        name: pg-etc
+      - emptyDir: {}
+        name: pg-conf
+      - emptyDir:
+          sizeLimit: 10Gi
+        name: tmp
+      - configMap:
+          defaultMode: 420
+          name: pgpool-config
+        name: config-volume
+      - configMap:
+          defaultMode: 420
+          name: pgpool-config
+        name: config-volume1

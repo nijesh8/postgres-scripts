@@ -1,0 +1,13 @@
+while(true) ;
+do
+  sleep 2 ;
+  psql citus << EOF
+\! echo ; echo "Active Sessions"; echo
+:activ3
+:ix_usage
+\q
+EOF
+echo
+echo PROCESS LIST
+ps -ef |grep citus | grep -v grep
+done

@@ -1,0 +1,21 @@
+# Date updated: 3/24/2023
+# Usage ./cpfiles list2  pgscripts2.tar
+# Nijesh
+
+export list=$1
+export file1=$2
+
+# export colo=$2
+
+for i in `cat $list`
+do
+  export colo=`echo $i| cut -d"-" -f4`
+  if [ $colo == "slc" ]
+  then
+    tess kubectl --cluster=140 -n postgresdba-stg cp $file1 $i:/home/postgres/$file1
+    echo Copied to $i cluster=140 /home/postgres/$file1
+  else
+    tess kubectl --cluster=130 -n postgresdba-stg cp $file1 $i:/home/postgres/$file1
+    echo Copied to $i cluster=130 /home/postgres/$file1
+  fi
+done
