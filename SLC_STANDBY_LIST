@@ -1,0 +1,8 @@
+#!/bin/bash
+
+
+COLO=slc
+for i in `cat status|grep "#stby"|cut -d"#" -f1|grep "fss-$COLO"`; 
+do 
+  tk140d exec -it $i -- bash /home/postgres/pglist
+done

@@ -1,0 +1,26 @@
+RUN export DEBIAN_FRONTEND=noninteractive \
+  && apt-get update -y \
+  && apt-get install -y vim \
+  && apt-get install -y nano \
+  && apt-get install -y wget \
+  && apt-get install -y curl \
+  && apt-get install -y htop \
+  && apt-get install -y procps \
+  && apt-get install -y findutils \
+  && apt-get install -y iputils-ping \
+  && apt-get install -y libicu-dev \
+  && apt-get install -y libselinux1 \
+  && apt-get install -y sysstat \
+  && apt-get install -y gnupg2 \
+  && apt-get install -y telnet \
+  && apt-get install -y tzdata \
+  && apt-get install -y ca-certificates \
+  && apt-get install -y screen \
+  && apt-get install -y jq
+
+# 11/09/22 - Nijesh
+RUN export DEBIAN_FRONTEND=noninteractive \
+  && apt-get install -y net-tools \
+  && apt-get install -y dnsutils \
+  && apt-get install -y lsof
+

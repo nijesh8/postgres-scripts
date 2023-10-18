@@ -1,0 +1,14 @@
+while(true) ; 
+do  
+	sleep 2 ; 
+	echo ============================= ; 
+	tail -40 $PGDATA/log/postgresql.log | egrep -v 'host=\[local\]|application_name=psql'; 
+	echo ; echo "Time now : " `date`; echo ;
+	ls -tlr $PGDATA/standby.signal ; echo ;
+	psql -c "select application_name, sync_state, sync_priority from pg_stat_replication" 
+	echo ; 
+	psql << EOF
+:ix_usage
+\q   
+EOF
+done

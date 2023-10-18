@@ -1,0 +1,21 @@
+
+echo "Directory Permissions.."
+echo "===================================" ; echo 
+chmod o-rx $PGDATA
+ls -ld $PGDATA
+echo
+
+date 
+
+echo "sleep for 5 seconds.."
+echo "===================================" ; echo
+sleep 5
+
+echo 
+echo "Checking for Postgres processes.."
+echo "===================================" ; echo 
+ps -ef | grep -v grep  
+
+echo
+patronictl list
+

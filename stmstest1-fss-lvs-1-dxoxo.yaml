@@ -1,0 +1,527 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    application.tess.io/id: urn:ebay-marketplace-consumerid:9b6b2fd7-f8cd-4b20-acff-a4bb1e9642de
+    application.tess.io/name: postgresdba
+    applicationservice.cms.tess.io/oid: 64cc89a6326d3c57621ee163
+    applicationservice.cms.tess.io/resource-id: stmstest1-app:postgresdba-prod-tessprod
+    apps.tess.io/cms_sync: synced
+    compute.cms.tess.io/resource-id: 10.81.96.50
+    environment.tess.io/name: production
+    io.sherlock.metrics/hosts: https://${data.host}:443/metrics
+    io.sherlock.metrics/insecure_skip_verify: "true"
+    io.sherlock.metrics/module: prometheus
+    io.sherlock.metrics/namespace: tess-apps
+    io.sherlock.metrics/period: 1m
+    io.sherlock.metrics/scheme: https
+    io.sherlock.metrics/timeout: 30s
+    kubernetes.io/psp: default
+    serviceinstance.cms.tess.io/resource-id: postgresdba-prod-tessprod:stmstest1-fss-lvs-1-dxoxo-10.81.96.50
+    serviceinstance.tess.io/oid: 64cca47ffe0129d7253c8d11
+    topology.cms.tess.io/resource-id: stmstest1-topo:postgresdba-prod-tessprod
+    vcluster.cms.tess.io/oid: 64cca47f9f651495b2ec3d0e
+    vcluster.cms.tess.io/resource-id: LVS:134:postgresdba-prod:stmstest1
+  creationTimestamp: "2023-08-04T07:10:30Z"
+  finalizers:
+  - serviceinstance.tess.io/cms_synced
+  labels:
+    app: stmstest1
+    application.tess.io/name: postgresdba
+    applicationinstance.tess.io/name: stmstest1
+    cluster: Tess134
+    componentId: "14743"
+    componentName: stmstest1-fss
+    environment.tess.io/name: production
+    faultDomain: LVS05-01-0310-4306-1
+    firewall.network.tess.io/type: none
+    lifecycle-state.tess.io/name: production
+    memberId: "1"
+    milkyway: milkyway
+    name: stmstest1-fss-lvs-1
+    node: tess-node-zzxwk-tess134.stratus.lvs.ebay.com
+    podType: podOnly
+    rack: lvs_lvs05_01-0310_43_06
+    serviceId: "7524"
+    serviceName: stmstest1
+    serviceType: federatedStatefulSet
+    spanId: d7a6fa9225dd4683
+    traceId: 3d69c304f43897a74e223ba16879ca24
+    type: fss
+    zone: lvs
+    zone.network.tess.io: mpt-prod
+  name: stmstest1-fss-lvs-1-dxoxo
+  namespace: postgresdba-prod
+  resourceVersion: "8033317031"
+  selfLink: /api/v1/namespaces/postgresdba-prod/pods/stmstest1-fss-lvs-1-dxoxo
+  uid: 2359d7ae-5156-4ccb-a523-6f262c6a5dea
+spec:
+  containers:
+  - env:
+    - name: MY_POD_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.podIP
+    - name: PATRONI_ZOOKEEPER_HOSTS
+      value: '''zookeeper-stms-fss-lvs-1.postgresdba-prod.svc.134.tess.io'',''zookeeper-stms-fss-slc-2.postgresdba-prod.svc.137.tess.io'',''zookeeper-stms-fss-slc-3.postgresdba-prod.svc.137.tess.io'''
+    - name: PATRONI_SUPERUSER_USERNAME
+      value: postgres
+    - name: PATRONI_SUPERUSER_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: superuser-password
+          name: stmstest1
+    - name: PATRONI_REPLICATION_USERNAME
+      value: standby
+    - name: PATRONI_REPLICATION_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: replication-password
+          name: stmstest1
+    - name: PATRONI_SCOPE
+      value: stmstest1
+    - name: PATRONI_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: PATRONI_POSTGRESQL_DATA_DIR
+      value: /data/postgresql/15/data
+    - name: PATRONI_POSTGRESQL_PGPASS
+      value: /data/postgresql/15/pgpass
+    - name: PATRONI_POSTGRESQL_LISTEN
+      value: 0.0.0.0:5432
+    - name: PATRONI_RESTAPI_LISTEN
+      value: 0.0.0.0:8008
+    - name: PATRONI_LOG_LEVEL
+      value: INFO
+    - name: PATRONI_LOG_DIR
+      value: /data/postgresql/15
+    - name: MY_NAMESPACE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+    - name: MY_POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: MY_NODE_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: spec.nodeName
+    - name: POD_APP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels['application.tess.io/name']
+    - name: POD_APP_INST
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels['applicationinstance.tess.io/name']
+    - name: POD_ENV
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels['lifecycle-state.tess.io/name']
+    - name: POD_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.podIP
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: MEMBERID
+      value: "1"
+    - name: SELF_DOMAIN_NAME
+      value: stmstest1-fss-lvs-1.postgresdba-prod.svc.134.tess.io
+    - name: SELF_RESOURCE_NAME
+      value: stmstest1-fss-lvs-1-dxoxo
+    - name: COMPONENT_NAME
+      value: stmstest1-fss
+    - name: SERVICE_NAME
+      value: stmstest1
+    - name: ZONE
+      value: lvs
+    - name: CLUSTER
+      value: Tess134
+    - name: CLUSTER_SIZE
+      value: "3"
+    - name: SELF_UDNS
+      value: stmstest1-fss-1.postgresdba-prod.vip.ebay.com
+    image: hub.tess.io/mpdba/nusql:v15.3.stms
+    imagePullPolicy: Always
+    name: pg-server
+    ports:
+    - containerPort: 8008
+      name: pgs-port8008
+      protocol: TCP
+    - containerPort: 5432
+      name: pgs-port5432
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /readiness
+        port: 8008
+        scheme: HTTP
+      initialDelaySeconds: 3
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    resources:
+      limits:
+        cpu: "10"
+        memory: 48Gi
+      requests:
+        cpu: "10"
+        memory: 48Gi
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - NET_BIND_SERVICE
+        - NET_RAW
+        - SETGID
+        - SETUID
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /home/postgres
+      name: pgs-pghome
+    - mountPath: /data
+      name: pgs-pgdata
+    - mountPath: /arch
+      name: pgs-arch
+    - mountPath: /backups
+      name: pgs-backups
+    - mountPath: /tmp
+      name: pgs-tmpvol
+    - mountPath: /var/run/postgresql
+      name: pgs-var-run-pg
+    - mountPath: /var/run/screen
+      name: pgs-var-run-screen
+    - mountPath: /etc/podinfo
+      name: podinfo
+    - mountPath: /opt/nap/config
+      name: nap-config
+    - mountPath: /opt/settings
+      name: nap-settings
+    - mountPath: /opt/logs
+      name: nap-logs
+    - mountPath: /opt/data
+      name: nap-data
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: postgres-token-zmqg5
+      readOnly: true
+  - env:
+    - name: DB_HOST
+      value: localhost
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: superuser-password
+          name: stmstest1
+    - name: DB_USER
+      value: postgres
+    - name: POOL_MODE
+      value: session
+    - name: SERVER_RESET_QUERY
+      value: DISCARD ALL
+    - name: LISTEN_PORT
+      value: "6432"
+    - name: UNIX_SOCKET_DIR
+      value: /var/run/postgresql
+    - name: APPLICATION_NAME_ADD_HOST
+      value: "1"
+    - name: DEFAULT_POOL_SIZE
+      value: "5000"
+    - name: MAX_CLIENT_CONN
+      value: "10000"
+    - name: MIN_POOL_SIZE
+      value: "30"
+    - name: MY_NAMESPACE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+    - name: MY_POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: MY_NODE_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: spec.nodeName
+    - name: POD_APP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels['application.tess.io/name']
+    - name: POD_APP_INST
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels['applicationinstance.tess.io/name']
+    - name: POD_ENV
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels['lifecycle-state.tess.io/name']
+    - name: POD_IP
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: status.podIP
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: MEMBERID
+      value: "1"
+    - name: SELF_DOMAIN_NAME
+      value: stmstest1-fss-lvs-1.postgresdba-prod.svc.134.tess.io
+    - name: SELF_RESOURCE_NAME
+      value: stmstest1-fss-lvs-1-dxoxo
+    - name: COMPONENT_NAME
+      value: stmstest1-fss
+    - name: SERVICE_NAME
+      value: stmstest1
+    - name: ZONE
+      value: lvs
+    - name: CLUSTER
+      value: Tess134
+    - name: CLUSTER_SIZE
+      value: "3"
+    - name: SELF_UDNS
+      value: stmstest1-fss-1.postgresdba-prod.vip.ebay.com
+    image: hub.tess.io/mpdba/nusql:pgbouncer_v1.20.0_prod
+    imagePullPolicy: Always
+    lifecycle:
+      preStop:
+        exec:
+          command:
+          - /bin/sh
+          - -c
+          - killall -INT /usr/sbin/pgbouncer && sleep 120
+    name: pgbouncer
+    ports:
+    - containerPort: 6432
+      name: pgb-port6432
+      protocol: TCP
+    resources:
+      limits:
+        cpu: "4"
+        memory: 16Gi
+      requests:
+        cpu: "4"
+        memory: 16Gi
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - NET_BIND_SERVICE
+        - NET_RAW
+        - SETGID
+        - SETUID
+        - all
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /home/postgres
+      name: pgb-pghome
+    - mountPath: /tmp
+      name: pgb-tmpvol
+    - mountPath: /var/run/postgresql
+      name: pgb-var-run-pg
+    - mountPath: /etc/pgbouncer
+      name: etc-pgbouncer
+    - mountPath: /etc/podinfo
+      name: podinfo
+    - mountPath: /opt/nap/config
+      name: nap-config
+    - mountPath: /opt/settings
+      name: nap-settings
+    - mountPath: /opt/logs
+      name: nap-logs
+    - mountPath: /opt/data
+      name: nap-data
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: postgres-token-zmqg5
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  hostname: stmstest1-fss-lvs-1
+  nodeName: tess-node-zzxwk-tess134.stratus.lvs.ebay.com
+  nodeSelector:
+    zone.network.tess.io/mpt-prod: "true"
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext:
+    fsGroup: 83646
+    runAsGroup: 83646
+    runAsUser: 83247
+  serviceAccount: postgres
+  serviceAccountName: postgres
+  subdomain: stmstest1-fss-lvs-1
+  terminationGracePeriodSeconds: 0
+  tolerations:
+  - key: dedicated
+    value: highmem
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/memory-pressure
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/disk-pressure
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/out-of-disk
+    operator: Exists
+  - effect: NoExecute
+    key: node.kubernetes.io/network-unavailable
+    operator: Exists
+  - effect: NoSchedule
+    key: node.kubernetes.io/memory-pressure
+    operator: Exists
+  volumes:
+  - emptyDir: {}
+    name: nap-settings
+  - emptyDir: {}
+    name: nap-logs
+  - emptyDir: {}
+    name: nap-data
+  - configMap:
+      defaultMode: 420
+      items:
+      - key: app.config
+        path: app.config
+      - key: agent.config
+        path: agent.config
+      - key: cluster.info
+        path: cluster.info
+      name: stmstest1-fss-lvs
+    name: nap-config
+  - name: pgs-pgdata
+    persistentVolumeClaim:
+      claimName: stmstest1-fss-lvs-1-dxoxo-pgs-pgdata-1
+  - name: pgs-arch
+    persistentVolumeClaim:
+      claimName: stmstest1-fss-lvs-1-dxoxo-pgs-arch-1
+  - name: pgs-backups
+    persistentVolumeClaim:
+      claimName: stmstest1-fss-lvs-1-dxoxo-pgs-backups-1
+  - name: etc-pgbouncer
+    persistentVolumeClaim:
+      claimName: stmstest1-fss-lvs-1-dxoxo-etc-pgbouncer-1
+  - downwardAPI:
+      defaultMode: 420
+      items:
+      - fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.labels
+        path: labels
+      - fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.annotations
+        path: annotations
+    name: podinfo
+  - emptyDir:
+      sizeLimit: 10Gi
+    name: pgb-pghome
+  - emptyDir:
+      sizeLimit: 1Gi
+    name: pgb-var-run-pg
+  - emptyDir:
+      sizeLimit: 50Gi
+    name: pgb-tmpvol
+  - emptyDir:
+      sizeLimit: 50Gi
+    name: pgs-pghome
+  - emptyDir:
+      sizeLimit: 5Gi
+    name: pgs-var-run-pg
+  - emptyDir:
+      sizeLimit: 50Gi
+    name: pgs-tmpvol
+  - emptyDir:
+      sizeLimit: 10Gi
+    name: pgs-var-run-screen
+  - name: postgres-token-zmqg5
+    secret:
+      defaultMode: 420
+      secretName: postgres-token-zmqg5
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2023-08-04T07:10:33Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2023-08-04T08:24:10Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2023-08-04T08:24:10Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2023-08-04T07:10:33Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://5055d8fcf94702e404668223f3aea0aa0d2dd81640bfb5668b360944ed9fc700
+    image: hub.tess.io/mpdba/nusql:v15.3.stms
+    imageID: hub.tess.io/mpdba/nusql@sha256:eb139a8883417cc1361ba385994b8241f3f966354a554ed3ebf5b620cf1987ad
+    lastState: {}
+    name: pg-server
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2023-08-04T07:10:46Z"
+  - containerID: containerd://2e87e465c26652f2b6c377a64a63790cf0dde58b58873612b453a4452bba2b4b
+    image: hub.tess.io/mpdba/nusql:pgbouncer_v1.20.0_prod
+    imageID: hub.tess.io/mpdba/nusql@sha256:b43cba6a43ae64dfbef13b48502235255c712d949641b29dd91ed5e922e94448
+    lastState:
+      terminated:
+        containerID: containerd://af1705239b8cb4a3e223537a892dcc22efb0e0381d2b9c581f3b7a4d202dbf08
+        exitCode: 137
+        finishedAt: "2023-08-04T08:24:08Z"
+        reason: Error
+        startedAt: "2023-08-04T07:10:51Z"
+    name: pgbouncer
+    ready: true
+    restartCount: 1
+    started: true
+    state:
+      running:
+        startedAt: "2023-08-04T08:24:08Z"
+  hostIP: 10.96.146.12
+  phase: Running
+  podIP: 10.81.96.50
+  podIPs:
+  - ip: 10.81.96.50
+  qosClass: Guaranteed
+  startTime: "2023-08-04T07:10:33Z"
